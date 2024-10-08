@@ -4,7 +4,9 @@
 
 ### Практические задания
 [Практика 1](https://AlexanderKoldin.github.io/test-assignment/practice/practice-1/)
+
 [Практика 2](https://AlexanderKoldin.github.io/test-assignment/practice/practice-2/)
+
 [Практика 3](https://AlexanderKoldin.github.io/test-assignment/practice/practice-3/)
 
 ### Теория
