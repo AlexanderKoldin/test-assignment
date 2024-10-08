@@ -30,5 +30,5 @@
 
 ### Теория
 Теоретическое задание
-[Теория](https://github.com/AlexanderKoldin/test-assignment/blob/main/theory/theory-1/answer.md)
+[Что выводит данный код](https://github.com/AlexanderKoldin/test-assignment/blob/main/theory/theory-1/answer.md)
 
