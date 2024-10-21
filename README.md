@@ -12,7 +12,7 @@
   - Дизайн формы доступен в [Figma](https://www.figma.com/design/oH1XMoId33T2lGH0ZenGHx/%D0%A4%D0%BE%D1%80%D0%BC%D0%B0-%D0%B4%D0%BB%D1%8F-%D1%82%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D1%8F?node-id=1-5&node-type=frame&t=joLA2ibtC3ilRBpJ-0).
 - **Решение**: [Смотреть решение](https://AlexanderKoldin.github.io/test-assignment/practice/practice-1/)
 
-  <details>
+<details>
 <summary>Update</summary>
 
 ## Основные функции
@@ -38,6 +38,7 @@
 Этот код обеспечивает полную функциональность для модального окна, включая открытие, закрытие, валидацию формы и загрузку аватара. 
 
 </details>
+
 
 
 ## 2. Запрос данных через JavaScript
