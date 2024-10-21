@@ -7,7 +7,21 @@ body {
 	align-items: center;
 }
 
-.modal__open {
+.hidden {
+	display: none;
+}
+
+.error-message {
+	position: absolute;
+	top: 52px;
+	left: 12px;
+	color: red;
+	font-size: 12px;
+	display: none;
+	margin-top: 5px;
+}
+
+.openBtn {
 	padding: 10px 20px;
 	font-size: 16px;
 	cursor: pointer;
@@ -23,13 +37,75 @@ body {
 	top: 0;
 	left: 0;
 	width: 100vw;
-	/* height: 1120px; */
 	background-color: rgba(0, 0, 0, 0.42);
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
-
+	padding-top: 50px;
 	padding-bottom: 100px;
+}
+
+.modal__image {
+	width: 175px;
+	height: 175px;
+	border-radius: 50%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.modal__image-loading {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+}
+
+.modal__avatar-container {
+	position: relative;
+	width: 175px;
+	height: 175px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal__image {
+	border-radius: 50%;
+	transition: box-shadow 0.3s ease;
+}
+
+.modal__avatar-container:hover .modal__image {
+	box-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
+}
+
+.modal__image-close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 37px;
+	height: 37px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.modal__close-icon {
+	width: 50%;
+	height: auto;
+}
+
+.modal__error-message {
+	position: absolute;
+	bottom: -20px;
+	left: 3px;
+	color: red;
+	font-size: 13px;
 }
 
 .modal--visible {
@@ -43,7 +119,6 @@ body {
 	background: #fff;
 	border-radius: 12px;
 	padding: 53px 91px;
-	margin-top: 5%;
 }
 
 .modal__title {
@@ -86,6 +161,7 @@ body {
 .modal__field {
 	display: flex;
 	flex-direction: column;
+	font-size: 12px;
 }
 
 .modal__input-container {
@@ -122,7 +198,7 @@ body {
 
 .modal__file-text {
 	position: absolute;
-	top: 70%;
+	top: 62%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	font-weight: 400;
@@ -133,35 +209,7 @@ body {
 	text-align: center;
 	color: #fff;
 	margin: 0;
-}
-
-.modal__image--loading {
-	position: absolute;
-	top: 45%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 30px;
-	height: 30px;
-	text-align: center;
-	color: #fff;
-}
-
-.modal__image--close {
-	position: absolute;
-	top: 44px;
-	right: 4px;
-	width: 37px;
-	height: 37px;
-	background-color: #fff;
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.modal__close-icon {
-	width: 50%;
-	height: auto;
+	cursor: pointer;
 }
 
 .modal__button-container {
@@ -181,8 +229,8 @@ body {
 }
 
 .modal__button--submit:disabled {
-	background-color: #ccc; /* Серый цвет для отключенной кнопки */
-	cursor: not-allowed; /* Указатель на недоступность */
+	background-color: #ccc;
+	cursor: not-allowed;
 }
 
 .modal__button--submit {
@@ -200,16 +248,7 @@ body {
 	font-size: 16px;
 	line-height: 1.5;
 	color: #0848c0;
-
 	margin: 0 auto;
-}
-
-.modal__image {
-	width: 175px; 
-	height: 175px; 
-	object-fit: cover; 
-	border-radius: 50%; 
-	border: 2px solid #ccc; 
 }
 
 .modal__icon {
@@ -225,16 +264,10 @@ body {
 	position: relative;
 }
 
-.modal__field--phone,
-.modal__field--email {
-	font-size: 11px;
-}
-
 .modal__input {
 	padding: 10px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
-
 	font-size: 16px;
 	height: 56px;
 	width: 100%;
@@ -277,7 +310,7 @@ body {
 		margin-top: 23%;
 	}
 
-	.modal__image--close {
+	.modal__image-close {
 		display: none;
 	}
 

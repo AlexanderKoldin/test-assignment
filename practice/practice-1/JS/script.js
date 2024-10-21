@@ -1,132 +1,153 @@
-document.addEventListener('DOMContentLoaded', function () {
-	'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-	// Элементы модального окна
-	const openModalBtn = document.getElementById('openModal');
-	const closeModalBtn = document.getElementById('closeModal');
-	const modal = document.getElementById('modal');
-	const modalForm = document.getElementById('modalForm');
-	const submitBtn = document.getElementById('submitBtn');
-	const phoneInput = document.getElementById('phone');
-	
-	// Элементы для загрузки аватара
-	const avatarUpload = document.getElementById('avatar-upload');
-	const avatarPreview = document.getElementById('avatar-preview');
-	const loadingImage = document.querySelector('.modal__image--loading');
-	const closeIcon = document.querySelector('.modal__image--close');
+    const openModalBtn = document.getElementById('openModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modal = document.getElementById('modal');
+    const modalForm = document.getElementById('modalForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const directionSelect = document.getElementById('direction');
+    const phoneInput = document.getElementById('phone');
+    const organizationInput = document.getElementById('organization');
+    const emailInput = document.getElementById('email');
+    const avatarUpload = document.getElementById('avatarUpload');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const removeAvatar = document.getElementById('removeAvatar');
+    const selectFileText = document.getElementById('selectFileText');
+    const avatarError = document.getElementById('avatarError');
+    const phoneError = document.getElementById('phoneError');
 
-	// Форматирование номера телефона
-	function formatPhoneNumber(value) {
-			const digits = value.replace(/\D/g, '');
-			let formattedNumber = '+7 (';
+    function openModal() {
+        modal.classList.add('modal--visible');
+        modal.setAttribute('aria-hidden', 'false');
+        openModalBtn.style.display = 'none';
+    }
 
-			if (digits.length > 1) {
-					formattedNumber += digits.slice(1, 4);
-			}
-			if (digits.length >= 5) {
-					formattedNumber += ') ' + digits.slice(4, 7);
-			}
-			if (digits.length >= 8) {
-					formattedNumber += '-' + digits.slice(7, 9);
-			}
-			if (digits.length >= 10) {
-					formattedNumber += '-' + digits.slice(9, 11);
-			}
+    function closeModal() {
+        modal.classList.remove('modal--visible');
+        modal.setAttribute('aria-hidden', 'true');
+        openModalBtn.style.display = 'block';
+    }
 
-			return formattedNumber;
-	}
+    openModalBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
 
-	// Обработчик для ввода телефона
-	phoneInput.addEventListener('input', function () {
-			this.value = formatPhoneNumber(this.value);
-	});
+    phoneInput.addEventListener('input', () => {
+        let input = phoneInput.value.replace(/\D/g, '');
+        if (!input.startsWith('7')) {
+            input = '7' + input;
+        }
+        phoneInput.value = formatPhoneNumber(`+${input}`);
+    });
 
-	// Функции открытия и закрытия модального окна
-	function openModal() {
-			modal.classList.add('modal--visible');
-			modal.setAttribute('aria-hidden', 'false');
-			openModalBtn.style.display = 'none';
-	}
+    function formatPhoneNumber(value) {
+        const parts = value.match(/(\+\d{1})(\d{0,3})(\d{0,3})(\d{0,4})/);
+        if (!parts) return value;
 
-	function closeModal() {
-			modal.classList.remove('modal--visible');
-			modal.setAttribute('aria-hidden', 'true');
-			openModalBtn.style.display = 'block';
-			modalForm.reset();
-			submitBtn.disabled = true;
-			avatarPreview.src = './img/face.svg'; // Сбросить аватар к исходному изображению
-			closeIcon.style.display = 'none'; // Скрыть иконку закрытия
-	}
+        let formattedValue = parts[1];
+        if (parts[2]) formattedValue += ` (${parts[2]}`;
+        if (parts[3]) formattedValue += `) ${parts[3]}`;
+        if (parts[4]) formattedValue += `-${parts[4]}`;
 
-	openModalBtn.addEventListener('click', openModal);
-	closeModalBtn.addEventListener('click', closeModal);
-	window.addEventListener('click', function (event) {
-			if (event.target === modal) {
-					closeModal();
-			}
-	});
+        return formattedValue;
+    }
 
-	// Валидация формы
-	modalForm.addEventListener('input', function () {
-			const organization = document.getElementById('organization').value.trim();
-			const phone = phoneInput.value.trim();
-			const email = document.getElementById('email').value.trim();
+    let phoneStatusLogged = false;
 
-			const isPhoneValid = phone.length === 18;
-			const isFormValid = organization && isPhoneValid && email;
+    modalForm.addEventListener('input', () => {
+        const organization = organizationInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+        const direction = directionSelect.value;
 
-			submitBtn.disabled = !isFormValid;
+        const isPhoneValid =
+            /^\+7\s*\(\d{3}\)\s*\d{3}-\d{2}-\d{2}$/.test(phone) ||
+            /^\+7\s*\(\d{3}\)\s*\d{3}-\d{4}$/.test(phone) ||
+            /^7\s*\d{10}$/.test(phone);
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isFormValid = organization && isPhoneValid && isEmailValid && direction;
 
-			if (submitBtn.disabled) {
-					submitBtn.classList.add('modal__button--submit--disabled');
-			} else {
-					submitBtn.classList.remove('modal__button--submit--disabled');
-			}
-	});
+        submitBtn.disabled = !isFormValid;
+        submitBtn.classList.toggle('modal__button--submit--disabled', submitBtn.disabled);
 
-	// Обработчик отправки формы
-	modalForm.addEventListener('submit', function (event) {
-			event.preventDefault();
-			alert('Форма успешно отправлена!');
-			closeModal();
-	});
+        if (!isPhoneValid || phone.length < 16) {
+            phoneError.textContent = 'Введите полный номер телефона';
+            phoneError.style.display = 'block';
+        } else {
+            phoneError.style.display = 'none';
+        }
+    });
 
-	// Обработчик для выбора файла аватара
-	avatarPreview.addEventListener('click', function () {
-			avatarUpload.click(); // Открываем диалоговое окно выбора файла
-	});
+    modalForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const organization = organizationInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+        const direction = directionSelect.value;
 
-	avatarUpload.addEventListener('change', function () {
-			const file = this.files[0];
+        const isPhoneValid = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/.test(phone) || /^\+7 \(\d{3}\) \d{3}-\d{4}$/.test(phone);
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isFormValid = organization && isPhoneValid && isEmailValid && direction;
 
-			// Проверка, что файл является изображением
-			if (file && file.type.startsWith('image/')) {
-					const reader = new FileReader();
+        if (isFormValid) {
+            alert('Форма успешно отправлена!');
+            closeModal();
+        } else {
+            console.log('Форма не отправлена. Проверьте заполнение полей.');
+        }
+    });
 
-					// Показать индикатор загрузки
-					loadingImage.style.display = 'block';
+    avatarPreview.addEventListener('click', () => {
+        avatarUpload.click();
+    });
 
-					reader.onload = function (e) {
-							avatarPreview.src = e.target.result; // Устанавливаем превью аватара
-							avatarPreview.style.display = 'block';
-							loadingImage.style.display = 'none'; // Скрыть индикатор загрузки
-							closeIcon.style.display = 'block'; // Показать иконку закрытия
-					};
+    selectFileText.addEventListener('click', () => {
+        avatarUpload.click();
+    });
 
-					reader.readAsDataURL(file); // Преобразуем файл в Data URL для предварительного просмотра
-			} else {
-					alert('Пожалуйста, выберите файл изображения (jpeg или png).');
-					avatarPreview.src = './img/face.svg'; // Сбрасываем изображение к исходному
-					avatarUpload.value = ''; // Очищаем выбор файла
-					loadingImage.style.display = 'none';
-					closeIcon.style.display = 'none';
-			}
-	});
+    loadingIndicator.addEventListener('click', () => {
+        avatarUpload.click();
+    });
 
-	// Обработчик для удаления аватара
-	closeIcon.addEventListener('click', function () {
-			avatarPreview.src = './img/face.svg'; // Возвращаем исходное изображение
-			avatarUpload.value = ''; // Очищаем выбор файла
-			closeIcon.style.display = 'none'; // Скрыть иконку закрытия
-	});
+    avatarUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            loadingIndicator.style.display = 'block';
+            selectFileText.style.display = 'none';
+            avatarError.style.display = 'none';
+
+            reader.onload = (e) => {
+                avatarPreview.src = e.target.result;
+                loadingIndicator.style.display = 'none';
+                removeAvatar.querySelector('.modal__close-icon').classList.remove('hidden');
+                removeAvatar.style.backgroundColor = '#fff';
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            avatarError.textContent = 'Пожалуйста, загрузите аватар';
+            avatarError.style.display = 'block';
+        }
+    });
+
+    removeAvatar.addEventListener('click', () => {
+        avatarPreview.src = './img/face.svg';
+        avatarUpload.value = '';
+        selectFileText.style.display = 'block';
+        loadingIndicator.style.display = 'block';
+
+        removeAvatar.querySelector('.modal__close-icon').classList.add('hidden');
+        removeAvatar.style.backgroundColor = '';
+
+        avatarError.textContent = 'Пожалуйста, загрузите аватар';
+        avatarError.style.display = 'block';
+    });
 });
